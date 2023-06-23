@@ -167,18 +167,9 @@ jobs:
       - name: Azure Machine Learning Pipeline For DBX Notebooks
         run: ${{ inputs.SCRIPT_LANGUAGE }} mlOps/nyc_taxi/aml_pipelines/v1/nyc_pipeline.py
         env:
-          DATABRICKS_COMPUTE_NAME: "AIML_58gb8Cores"
-          DATABRICKS_CLUSTER_NAME: "0928-181324-fjqfwmn4"
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
-      - shell: bash
-        name: Set Up DBX Environment Variables
-        run: |
-          DATABRICKS_TOKEN=$(az keyvault secret show --name "dbkstoken" --vault-name $AZ_KEYVAULT_NAME --query "value" -o tsv)
-          #echo $DATABRICKS_TOKEN
-          echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN" >> $GITHUB_ENV
 
       #################################/
       ##  DBX Deploy Jobs / Workflows
@@ -206,20 +197,3 @@ jobs:
         env:
           ENVIRONMENT:
             ${{ inputs.ENVIRONMENT }}
-
-            # DEPRECATED
-###################################################################################################################################################################//
-##                                                                      Create Jobs
-## Deprecated: Use for reference purposes only
-###################################################################################################################################################################//
-# 13.   Create Databricks Jobs (Linked To Git Repo)
-#      - name:                 Create Databricks Jobs
-#        run:                  python .github/MLOps_Engineer/Utilities/Python/utilsCreateJob.py
-
-###################################################################################################################################################################//
-##                                                                      Create Wheel Files & Upload
-## Deprecated: Use for reference purposes only
-###################################################################################################################################################################//
-# 16. Databricks Wheel File Creation + DBFS/Cluster Upload
-#- name:                   Create Wheel Files & Upload To DBFS
-#  run:                    bash .github/MLOps_Engineer/Utilities/Bash/utilsWheelUpload.sh
