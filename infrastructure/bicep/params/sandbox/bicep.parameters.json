@@ -15,18 +15,17 @@
       "value": "https://management.core.windows.net/"
     },
     "location": {
-        "value": "eastus"
+      "value": "eastus"
     },
     "environment": {
-        "value": "sandbox"
+      "value": "sandbox"
     },
-
     "containerNames": {
-        "value": [
-          "bronze",
-          "silver",
-          "gold"
-        ]
+      "value": [
+        "bronze",
+        "silver",
+        "gold"
+      ]
     },
     "storageConfig": {
       "value": {
@@ -37,10 +36,10 @@
         "accessTier": "Hot"
       }
     },
-    "resourceGroupName" :{
-      "value": "databricks-sandbox-rg"
+    "resourceGroupName": {
+      "value": "AIMLPlatformExperiment"
     },
-    "workspaceName" : {
+    "workspaceName": {
       "value": "dbxwssandbox"
     },
     "pricingTier": {
@@ -66,4 +65,3 @@
     }
   }
 }
-  
