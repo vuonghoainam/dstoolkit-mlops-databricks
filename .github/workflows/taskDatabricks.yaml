@@ -1,4 +1,4 @@
-name:                         Tasks Databricks
+name: Tasks Databricks
 on:
   workflow_call:
     inputs:
@@ -13,7 +13,7 @@ on:
         type: string
       DevOps_Agent:
         required: true
-        type: string 
+        type: string
         default: GitHub
     secrets:
       ARM_TENANT_ID:
@@ -29,35 +29,33 @@ on:
 
 jobs:
   build:
-    name:                         ${{ inputs.ENVIRONMENT }} Environment Deployment
-    runs-on:                      ubuntu-latest
+    name: ${{ inputs.ENVIRONMENT }} Environment Deployment
+    runs-on: ubuntu-latest
     #runs-on: self-hosted
-    environment:                  ${{ inputs.ENVIRONMENT }}
-    steps:      
-      - name:                     Checkout
-        uses:                     actions/checkout@v2
+    environment: ${{ inputs.ENVIRONMENT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-
-
-#################################/
-##  Set Python.                                      
-#################################/
-      - name:                     Setup Python
-        uses:                     actions/setup-python@v4
+      #################################/
+      ##  Set Python.
+      #################################/
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          python-version:         "3.8"
-    
-#################################/
-##  Dependencies/ Install                                              
-#################################/
+          python-version: "3.8"
+
+      #################################/
+      ##  Dependencies/ Install
+      #################################/
       - shell: bash
-        name:  Tests and Dependency Install
+        name: Tests and Dependency Install
         run: |
 
           pip3 install --upgrade pip
 
           #sudo apt update && sudo apt upgrade && sudo apt install jq -y
-          
+
 
           az extension add -n azure-cli-ml
 
@@ -71,65 +69,54 @@ jobs:
           pip3 install azure-mgmt-storage==21.0.0
           #pip3 install  azure-databricks-sdk-python
           az config set extension.use_dynamic_install=yes_without_prompt
-          
+
           pip3 install azureml
           pip3 install azureml-core
           pip3 install azureml.pipeline
-          
 
-#################################/
-##  Authenticate/Login To Azure                                               
-#################################/
-      - name:                     Service Principal Login
-        run:                      ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_azure_login.py
+      #################################/
+      ##  Authenticate/Login To Azure
+      #################################/
+      - name: Service Principal Login
+        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_azure_login.py
         env:
-          ARM_CLIENT_ID:          ${{ secrets.ARM_CLIENT_ID }}    
-          ARM_CLIENT_SECRET:      ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID:          ${{ secrets.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-#################################/
-## Deploy Azure Infrastructure.                                               
-#################################/
-      - name:                     Deploy Azure Resources
-        run:                      ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_azure_resources.py
+
+      #################################/
+      ##  Save Dynamically Generated Env Variable
+      #################################/
+      - name: Set Env Variables
+        run: bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
         env:
-          ENVIRONMENT:            ${{ inputs.ENVIRONMENT }}
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          DevOps_Agent: ${{ inputs.DevOps_Agent }}
 
-
-
-#################################/
-##  Save Dynamically Generated Env Variable                                               
-#################################/
-      - name:                     Set Env Variables 
-        run:                      bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
+      #################################/
+      ##  Generate AAD Tokens
+      #################################/
+      - name: Generate AAD Tokens
+        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_authentication_tokens.py
         env:
-          ENVIRONMENT:            ${{ inputs.ENVIRONMENT }}
-          DevOps_Agent:           ${{ inputs.DevOps_Agent }} 
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-
-#################################/
-##  Generate AAD Tokens                                              
-#################################/
-      - name:                     Generate AAD Tokens
-        run:                      ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_authentication_tokens.py
+      #################################/
+      ##  RBAC Assignments
+      #################################/
+      - name: Assign RBAC Permissions
+        run: bash infrastructure/databricks/databricks_utils/bash/utilsCreateRoleBasedAccess.sh
         env:
-          ENVIRONMENT:            ${{ inputs.ENVIRONMENT }}
-          ARM_CLIENT_ID:          ${{ secrets.ARM_CLIENT_ID }}    
-          ARM_CLIENT_SECRET:      ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID:          ${{ secrets.ARM_TENANT_ID }}
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
 
-#################################/
-##  RBAC Assignments                                           
-#################################/
-      - name:                     Assign RBAC Permissions 
-        run:                      bash infrastructure/databricks/databricks_utils/bash/utilsCreateRoleBasedAccess.sh
-        env:
-          ENVIRONMENT:            ${{ inputs.ENVIRONMENT }}
-
-#################################/
-##  Generate Python Wheel Files                                            
-#################################/
-      - name:                     'Create Helper_Functions Package Wheel File'
+      #################################/
+      ##  Generate Python Wheel Files
+      #################################/
+      - name: "Create Helper_Functions Package Wheel File"
         run: |
           pip3 install wheel
           ls
@@ -137,98 +124,91 @@ jobs:
           ls
           python setup.py sdist bdist_wheel
 
-
-#################################/
-##  PAT Token                                           
-#################################/
-      - name:                     Create And Store PAT Token In Key Vault
-        run:                      bash infrastructure/databricks/databricks_utils/bash/utilsCreateDatabricksToken.sh
+      #################################/
+      ##  PAT Token
+      #################################/
+      - name: Create And Store PAT Token In Key Vault
+        run: bash infrastructure/databricks/databricks_utils/bash/utilsCreateDatabricksToken.sh
         env:
-          DevOps_Agent:           ${{ inputs.DevOps_Agent }} 
+          DevOps_Agent: ${{ inputs.DevOps_Agent }}
 
-          
-#################################/
-##  Git Config                                           
-#################################/
-  
-      - name:                     Git Config
-        run:                      ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_git_configuration.py
-        env:
-          PAT_GITHUB:             ${{ secrets.PAT_GITHUB }}
+      #################################/
+      ##  Git Config
+      #################################/
 
-#################################/
-##  Create Repos                                           
-#################################/
-      - name:                     Create Databricks Repos
-        run:                      ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_repo_folder.py
+      - name: Git Config
+        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_git_configuration.py
         env:
-          ARM_CLIENT_ID:          ${{ secrets.ARM_CLIENT_ID }} 
+          PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
 
-#################################/
-##  Secret Scopes                                           
-#################################/
-      - name:                     Save Databricks SP Credentials Within Secret Scopes
-        run:                      ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_secret_scopes.py
+      #################################/
+      ##  Create Repos
+      #################################/
+      - name: Create Databricks Repos
+        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_repo_folder.py
         env:
-          ARM_CLIENT_ID:          ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET:      ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID:          ${{ secrets.ARM_TENANT_ID }}
-          
-#################################/
-##  Configure CLI                                           
-#################################/
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+
+      #################################/
+      ##  Secret Scopes
+      #################################/
+      - name: Save Databricks SP Credentials Within Secret Scopes
+        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_secret_scopes.py
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      #################################/
+      ##  Configure CLI
+      #################################/
       #- name:                     Install + Configure Databricks CLI
       #  run:                      bash MLOps/DevOps/Utilities/bash/utilsDatabricksCLIConfig.sh
       #  env:
-      #    DevOps_Agent:           ${{ inputs.DevOps_Agent }} 
+      #    DevOps_Agent:           ${{ inputs.DevOps_Agent }}
 
-#################################/
-##  Repo Pull                                           
-#################################/
-# 15. Databricks Repo Pull
-      - name:                     Repo Pull
-        run:                      bash infrastructure/databricks/databricks_utils/bash/utilsRepoPull.sh
+      #################################/
+      ##  Repo Pull
+      #################################/
+      # 15. Databricks Repo Pull
+      - name: Repo Pull
+        run: bash infrastructure/databricks/databricks_utils/bash/utilsRepoPull.sh
         env:
-          PULL_BRANCH:            ${{ github.ref_name }}
-          RELEASE_BRANCH:         ${{ inputs.RELEASE_BRANCH}} 
+          PULL_BRANCH: ${{ github.ref_name }}
+          RELEASE_BRANCH: ${{ inputs.RELEASE_BRANCH}}
 
+      #################################/
+      ##  Create Cluster
+      #################################/
+      - name: Create Databricks Clusters
+        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_cluster.py
 
-#################################/
-##  Create Cluster                                           
-#################################/
-      - name:                     Create Databricks Clusters
-        run:                      ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_cluster.py
-
-
-        
-#################################/
-##  Build AML Pipelines (Running Databricks Notebooks From AML Pipeline)  
-## Functionality Under Development (Not yet parameterized to work on general deployments)                                        
-#################################/
-# 15. AML Pipeline
-      - name:                       Azure Machine Learning Pipeline For DBX Notebooks
-        run:                        ${{ inputs.SCRIPT_LANGUAGE }} mlOps/nyc_taxi/aml_pipelines/v1/nyc_pipeline.py
+      #################################/
+      ##  Build AML Pipelines (Running Databricks Notebooks From AML Pipeline)
+      ## Functionality Under Development (Not yet parameterized to work on general deployments)
+      #################################/
+      # 15. AML Pipeline
+      - name: Azure Machine Learning Pipeline For DBX Notebooks
+        run: ${{ inputs.SCRIPT_LANGUAGE }} mlOps/nyc_taxi/aml_pipelines/v1/nyc_pipeline.py
         env:
-          DATABRICKS_COMPUTE_NAME:  'mlclusterlink'
-          DATABRICKS_CLUSTER_NAME:  'Unity_Cluster_13_ML'
-          ARM_CLIENT_ID:            ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET:        ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID:            ${{ secrets.ARM_TENANT_ID }}
+          DATABRICKS_COMPUTE_NAME: "mlclusterlink"
+          DATABRICKS_CLUSTER_NAME: "Unity_Cluster_13_ML"
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-
-      - shell:                    bash
-        name:                     Set Up DBX Environment Variables
+      - shell: bash
+        name: Set Up DBX Environment Variables
         run: |
           DATABRICKS_TOKEN=$(az keyvault secret show --name "dbkstoken" --vault-name $AZ_KEYVAULT_NAME --query "value" -o tsv)
           #echo $DATABRICKS_TOKEN
           echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN" >> $GITHUB_ENV
 
-
-#################################/
-##  DBX Deploy Jobs / Workflows                                            
-#################################/
-      - shell:                    bash
-        name:                     DBX Deploy - Workflow Artifacts (CD) 
+      #################################/
+      ##  DBX Deploy Jobs / Workflows
+      #################################/
+      - shell: bash
+        name: DBX Deploy - Workflow Artifacts (CD)
         run: |
 
           # Environment Variables below will be used for DBX Configure Auth. We are using the Databricks Personal Access Token, and 
@@ -242,37 +222,19 @@ jobs:
           databricks fs ls
 
           dbx configure --enable-inplace-jinja-support --profile default
-        
+
           # -e replaced with "default" instead of $ENVIRONMENT
           dbx deploy --workflows NYC_TAXI --no-package --deployment-file mlOps/nyc_taxi/databricks_pipelines/workflow.yaml \
           -e default --jinja-variables-file=mlOps/nyc_taxi/databricks_pipelines/workflow_params.yaml
 
         env:
-          ENVIRONMENT:            ${{ inputs.ENVIRONMENT }} 
+          ENVIRONMENT:
+            ${{ inputs.ENVIRONMENT }}
 
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                      # DEPRECATED
-
+            # DEPRECATED
 ###################################################################################################################################################################//
-##                                                                      Create Jobs  
-## Deprecated: Use for reference purposes only                                          
+##                                                                      Create Jobs
+## Deprecated: Use for reference purposes only
 ###################################################################################################################################################################//
 # 13.   Create Databricks Jobs (Linked To Git Repo)
 #      - name:                 Create Databricks Jobs
@@ -280,8 +242,8 @@ jobs:
 
 ###################################################################################################################################################################//
 ##                                                                      Create Wheel Files & Upload
-## Deprecated: Use for reference purposes only                                          
+## Deprecated: Use for reference purposes only
 ###################################################################################################################################################################//
 # 16. Databricks Wheel File Creation + DBFS/Cluster Upload
-      #- name:                   Create Wheel Files & Upload To DBFS
-      #  run:                    bash .github/MLOps_Engineer/Utilities/Bash/utilsWheelUpload.sh
+#- name:                   Create Wheel Files & Upload To DBFS
+#  run:                    bash .github/MLOps_Engineer/Utilities/Bash/utilsWheelUpload.sh
