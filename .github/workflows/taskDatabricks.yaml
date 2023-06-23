@@ -84,16 +84,6 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-
-      #################################/
-      ##  Save Dynamically Generated Env Variable
-      #################################/
-      - name: Set Env Variables
-        run: bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
-        env:
-          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-          DevOps_Agent: ${{ inputs.DevOps_Agent }}
-
       #################################/
       ##  Generate AAD Tokens
       #################################/
@@ -123,14 +113,6 @@ jobs:
           cd data_science/src_nyc_taxi
           ls
           python setup.py sdist bdist_wheel
-
-      #################################/
-      ##  PAT Token
-      #################################/
-      - name: Create And Store PAT Token In Key Vault
-        run: bash infrastructure/databricks/databricks_utils/bash/utilsCreateDatabricksToken.sh
-        env:
-          DevOps_Agent: ${{ inputs.DevOps_Agent }}
 
       #################################/
       ##  Git Config
@@ -178,12 +160,6 @@ jobs:
           RELEASE_BRANCH: ${{ inputs.RELEASE_BRANCH}}
 
       #################################/
-      ##  Create Cluster
-      #################################/
-      - name: Create Databricks Clusters
-        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_cluster.py
-
-      #################################/
       ##  Build AML Pipelines (Running Databricks Notebooks From AML Pipeline)
       ## Functionality Under Development (Not yet parameterized to work on general deployments)
       #################################/
@@ -191,8 +167,8 @@ jobs:
       - name: Azure Machine Learning Pipeline For DBX Notebooks
         run: ${{ inputs.SCRIPT_LANGUAGE }} mlOps/nyc_taxi/aml_pipelines/v1/nyc_pipeline.py
         env:
-          DATABRICKS_COMPUTE_NAME: "mlclusterlink"
-          DATABRICKS_CLUSTER_NAME: "Unity_Cluster_13_ML"
+          DATABRICKS_COMPUTE_NAME: "AIML_58gb8Cores"
+          DATABRICKS_CLUSTER_NAME: "0928-181324-fjqfwmn4"
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
