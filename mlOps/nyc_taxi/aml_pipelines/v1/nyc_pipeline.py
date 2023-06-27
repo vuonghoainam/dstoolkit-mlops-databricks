@@ -10,7 +10,7 @@ from azureml.core.authentication import ServicePrincipalAuthentication
 
 
 DATABRICKS_COMPUTE_NAME = os.environ['DATABRICKS_COMPUTE_NAME']
-RESOURCE_GROUP_NAME = os.environ['RESOURCE_GROUP_NAME']
+RESOURCE_GROUP_NAME = "AIMLPlatformExperiment" # To be fixed
 DATABRICKS_AAD_TOKEN = os.environ['DATABRICKS_AAD_TOKEN']
 DATABRICKS_INSTANCE = os.environ['DATABRICKS_INSTANCE']
 DATABRICKS_WS_NAME = os.environ['DATABRICKS_WS_NAME']
