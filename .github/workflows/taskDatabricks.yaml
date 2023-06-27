@@ -195,7 +195,7 @@ jobs:
           AML_WS_NAME: aimlexperiment
           DATABRICKS_WS_NAME: aimlexperimentdbspremium
           # To add to github secrets
-          DATABRICKS_COMPUTE_NAME: adb-5089469696695010
+          DATABRICKS_COMPUTE_NAME: AIML_58gb8Cores
 
       #################################/
       ##  DBX Deploy Jobs / Workflows
