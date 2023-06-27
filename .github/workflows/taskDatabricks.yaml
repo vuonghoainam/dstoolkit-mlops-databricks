@@ -194,6 +194,8 @@ jobs:
           SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
           AML_WS_NAME: ${{ secrets.AML_WS_NAME }}
           DATABRICKS_WS_NAME: ${{ secrets.DATABRICKS_WS_NAME }}
+          # To add to github secrets
+          DATABRICKS_COMPUTE_NAME: adb-5089469696695010
 
       #################################/
       ##  DBX Deploy Jobs / Workflows
