@@ -143,16 +143,16 @@ jobs:
       #################################/
       ##  Secret Scopes
       #################################/
-      - name: Save Databricks SP Credentials Within Secret Scopes
-        run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_secret_scopes.py
-        env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
-          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-          AML_WS_NAME: ${{ secrets.AML_WS_NAME }}
+      # - name: Save Databricks SP Credentials Within Secret Scopes
+      #   run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_create_secret_scopes.py
+      #   env:
+      #     ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      #     ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      #     ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      #     DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      #     RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+      #     SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      #     AML_WS_NAME: ${{ secrets.AML_WS_NAME }}
 
       #################################/
       ##  Configure CLI
