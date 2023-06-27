@@ -31,18 +31,6 @@ DBRKS_REQ_HEADERS = {
     'Content-Type': 'application/json'
 }
 
-#print(DATABRICKS_COMPUTE_NAME)
-#print(WORKSPACE_ID)
-#print(RESOURCE_GROUP_NAME)
-#print(DATABRICKS_AAD_TOKEN)
-#print(DATABRICKS_MANAGEMENT_TOKEN)
-#print(DATABRICKS_INSTANCE)
-#print(SUBSCRIPTION_ID)
-#print(ARM_CLIENT_SECRET)
-#print(ARM_TENANT_ID)
-#print(ARM_CLIENT_ID)
-#print(AML_WS_NAME)
-
 class GetClusterID():
     def __init__(self, cluster_name):
         self.clusters_obj = self.list_clusters()['clusters']
