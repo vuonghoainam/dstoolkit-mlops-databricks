@@ -96,12 +96,13 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       #################################/
-      ##  RBAC Assignments
+      ##  Save Dynamically Generated Env Variable
       #################################/
-      - name: Assign RBAC Permissions
-        run: bash infrastructure/databricks/databricks_utils/bash/utilsCreateRoleBasedAccess.sh
-        env:
-          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      # - name: Set Env Variables
+      #   run: bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
+      #   env:
+      #     ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      #     DevOps_Agent: ${{ inputs.DevOps_Agent }}
 
       #################################/
       ##  Generate Python Wheel Files
@@ -121,10 +122,10 @@ jobs:
       - name: Git Config
         run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_git_configuration.py
         env:
-          PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-          WORKSPACE_ID: ${{ secrets.WORKSPACE_ID }}
-          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
+          PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
+          WORKSPACE_ID: ${{ env.WORKSPACE_ID }}
+          DATABRICKS_INSTANCE: ${{ env.DATABRICKS_INSTANCE }}
 
       #################################/
       ##  Create Repos
@@ -184,9 +185,6 @@ jobs:
           # Environment Variables below will be used for DBX Configure Auth. We are using the Databricks Personal Access Token, and 
           # not the Databricks AAD Token. 
           pip3 install dbx
-
-          #echo $DATABRICKS_TOKEN
-          #echo $DATABRICKS_HOST
 
           databricks -h 
           databricks fs ls
