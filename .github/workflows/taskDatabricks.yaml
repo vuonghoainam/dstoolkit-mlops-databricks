@@ -96,13 +96,13 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       #################################/
-      ##  Save Dynamically Generated Env Variable
-      #################################/
-      # - name: Set Env Variables
-      #   run: bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
-      #   env:
-      #     ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-      #     DevOps_Agent: ${{ inputs.DevOps_Agent }}
+      #  Save Dynamically Generated Env Variable
+      ################################/
+      - name: Set Env Variables
+        run: bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
+        env:
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          DevOps_Agent: ${{ inputs.DevOps_Agent }}
 
       #################################/
       ##  Generate Python Wheel Files
@@ -124,8 +124,6 @@ jobs:
         env:
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
-          WORKSPACE_ID: ${{ env.WORKSPACE_ID }}
-          DATABRICKS_INSTANCE: ${{ env.DATABRICKS_INSTANCE }}
 
       #################################/
       ##  Create Repos

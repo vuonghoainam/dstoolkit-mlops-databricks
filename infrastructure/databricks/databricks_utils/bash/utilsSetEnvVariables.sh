@@ -3,11 +3,6 @@
 
 echo $ENVIRONMENT
 
-echo "Ingest JSON File"
-JSON=$( jq '.' infrastructure/bicep/params/$ENVIRONMENT/bicep.parameters.json)
-
-
-RESOURCE_GROUP_NAME=$( jq -r '.parameters.resourceGroupName.value' <<< "$JSON")
 echo "Resource Group Name: $RESOURCE_GROUP_NAME"
 
 if [[ $DevOps_Agent == "GitHub" ]]; then
