@@ -189,11 +189,11 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
-          DATABRICKS_ORDGID: ${{ secrets.DATABRICKS_ORDGID }}
-          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-          AML_WS_NAME: ${{ secrets.AML_WS_NAME }}
-          DATABRICKS_WS_NAME: ${{ secrets.DATABRICKS_WS_NAME }}
+          RESOURCE_GROUP_NAME: AIMLPlatformExperiment
+          DATABRICKS_ORDGID: 5089469696695010
+          SUBSCRIPTION_ID: 8178e63d-3cfe-4434-bae7-4bac02afc65f
+          AML_WS_NAME: aimlexperiment
+          DATABRICKS_WS_NAME: aimlexperimentdbspremium
           # To add to github secrets
           DATABRICKS_COMPUTE_NAME: adb-5089469696695010
 

@@ -9,19 +9,19 @@ from azureml.exceptions import ComputeTargetException
 from azureml.core.authentication import ServicePrincipalAuthentication
 
 
-DATABRICKS_COMPUTE_NAME = "adb-5089469696695010"
-RESOURCE_GROUP_NAME = "AIMLPlatformExperiment" # To be fixed
+DATABRICKS_COMPUTE_NAME = os.environ['DATABRICKS_COMPUTE_NAME']
+RESOURCE_GROUP_NAME = os.environ['RESOURCE_GROUP_NAME']
 DATABRICKS_AAD_TOKEN = os.environ['DATABRICKS_AAD_TOKEN']
 DATABRICKS_INSTANCE = os.environ['DATABRICKS_INSTANCE']
-DATABRICKS_WS_NAME = "aimlexperimentdbspremium"
-WORKSPACE_ID = "/subscriptions/8178e63d-3cfe-4434-bae7-4bac02afc65f/resourceGroups/AIMLPlatformExperiment/providers/Microsoft.Databricks/workspaces/aimlexperimentdbspremium"
-SUBSCRIPTION_ID = "8178e63d-3cfe-4434-bae7-4bac02afc65f "
+DATABRICKS_WS_NAME = os.environ['DATABRICKS_WS_NAME']
+WORKSPACE_ID = os.environ['WORKSPACE_ID']
+SUBSCRIPTION_ID = os.environ['SUBSCRIPTION_ID']
 ARM_CLIENT_SECRET = os.environ['ARM_CLIENT_SECRET']
 ARM_TENANT_ID = os.environ['ARM_TENANT_ID']
 ARM_CLIENT_ID = os.environ['ARM_CLIENT_ID']
 DATABRICKS_MANAGEMENT_TOKEN = os.environ['DATABRICKS_MANAGEMENT_TOKEN']
 ENVIRONMENT = os.environ['ENVIRONMENT']
-AML_WS_NAME = "aimlexperiment"
+AML_WS_NAME = os.environ['AML_WS_NAME']
 
 DBRKS_REQ_HEADERS = {
     'Authorization': f'Bearer {DATABRICKS_AAD_TOKEN}',
