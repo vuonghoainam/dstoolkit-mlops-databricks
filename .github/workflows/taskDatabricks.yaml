@@ -123,6 +123,8 @@ jobs:
         env:
           PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          WORKSPACE_ID: ${{ secrets.WORKSPACE_ID }}
+          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
 
       #################################/
       ##  Create Repos
