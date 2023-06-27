@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 pip3 install databricks-cli --upgrade
 
-
-AZ_KEYVAULT_NAME=$(az keyvault list -g $RESOURCE_GROUP_NAME --query "[].name" -o tsv)
-DATABRICKS_TOKEN=$(az keyvault secret show --name "dbkstoken" --vault-name $AZ_KEYVAULT_NAME --query "value" -o tsv)
-
 echo $DATABRICKS_HOST
 echo $DATABRICKS_TOKEN
 echo $DevOps_Agent
-
 
 # Change absolutely NOTHING.
 # DATABRICKS_HOST : It Must Start As https:// : It Must Not End In '/'
