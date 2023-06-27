@@ -110,7 +110,7 @@ if __name__ == "__main__":
         databricks_compute.wait_for_completion(True)
 
     
-    cluster_obj = GetClusterID("ml_cluster")
+    cluster_obj = GetClusterID(DATABRICKS_COMPUTE_NAME)
     cluster_id = cluster_obj.get_cluster_id()
 
 
