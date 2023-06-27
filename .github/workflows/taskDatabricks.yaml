@@ -98,11 +98,11 @@ jobs:
       #################################/
       #  Save Dynamically Generated Env Variable
       ################################/
-      - name: Set Env Variables
-        run: bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
-        env:
-          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-          DevOps_Agent: ${{ inputs.DevOps_Agent }}
+      # - name: Set Env Variables
+      #   run: bash infrastructure/databricks/databricks_utils/bash/utilsSetEnvVariables.sh
+      #   env:
+      #     ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      #     DevOps_Agent: ${{ inputs.DevOps_Agent }}
 
       #################################/
       ##  Generate Python Wheel Files
@@ -122,6 +122,8 @@ jobs:
       - name: Git Config
         run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_git_configuration.py
         env:
+          WORKSPACE_ID: ${{ secrets.WORKSPACE_ID }}
+          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
 
