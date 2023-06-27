@@ -122,6 +122,7 @@ jobs:
         run: ${{ inputs.SCRIPT_LANGUAGE }} infrastructure/databricks/databricks_utils/${{ inputs.SCRIPT_LANGUAGE }}/utils_git_configuration.py
         env:
           PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
 
       #################################/
       ##  Create Repos
@@ -195,5 +196,4 @@ jobs:
           -e default --jinja-variables-file=mlOps/nyc_taxi/databricks_pipelines/workflow_params.yaml
 
         env:
-          ENVIRONMENT:
-            ${{ inputs.ENVIRONMENT }}
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
