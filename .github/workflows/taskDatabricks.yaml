@@ -104,6 +104,13 @@ jobs:
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           DevOps_Agent: ${{ inputs.DevOps_Agent }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+          DATABRICKS_ORDGID: ${{ secrets.DATABRICKS_ORDGID }}
+          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
+          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+          AML_WS_NAME: ${{ secrets.AML_WS_NAME }}
+          DATABRICKS_WS_NAME: ${{ secrets.DATABRICKS_WS_NAME }}
+          WORKSPACE_ID: ${{ secrets.WORKSPACE_ID }}
 
       #################################/
       ##  Generate Python Wheel Files
@@ -144,6 +151,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       #################################/
       ##  Configure CLI
