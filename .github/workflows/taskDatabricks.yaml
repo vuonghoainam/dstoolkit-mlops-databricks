@@ -162,6 +162,10 @@ jobs:
         env:
           DevOps_Agent: ${{ inputs.DevOps_Agent }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+          AML_WS_NAME: ${{ secrets.AML_WS_NAME }}
 
       #################################/
       ##  Repo Pull
